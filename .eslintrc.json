@@ -21,12 +21,26 @@
   },
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": [ "error",
+      {
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "ts": "never"
+          }
+        ],
+        "endOfLine":"auto"
+      }
+    ],
     "import/extensions": [
       "error",
       "ignorePackages",
       {
-        "ts": "never"
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
       }
     ]
   },
