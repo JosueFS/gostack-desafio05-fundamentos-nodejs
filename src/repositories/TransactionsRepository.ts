@@ -1,4 +1,5 @@
 import Transaction from '../models/Transaction';
+import { response } from 'express';
 
 interface Balance {
   income: number;
@@ -10,6 +11,11 @@ interface CreateTransactionDTO {
   title: string;
   value: number;
   type: 'income' | 'outcome';
+}
+
+interface GroupTransactionType {
+  income: Transaction[];
+  outcome: Transaction[];
 }
 
 class TransactionsRepository {
@@ -24,17 +30,29 @@ class TransactionsRepository {
   }
 
   public getBalance(): Balance {
-    const incomeSum = this.transactions.reduce((accum, obj) => {
-      let total: Balance;
-        if (!obj.type){
-          total[] = [];
-        }
-      });
-    }
+    const balance: Balance = this.transactions.reduce(
+      (accum, obj) => {
+        const b = accum;
+
+        b[obj.type] += obj.value;
+
+        return b;
+      },
+      {
+        income: 0,
+        outcome: 0,
+        total: 0,
+      },
+    );
+
+    balance.total = balance.income - balance.outcome;
+
+    return balance;
   }
 
   public create({ title, value, type }: CreateTransactionDTO): Transaction {
     const newTransaction = new Transaction({ title, value, type });
+    const balance = this.getBalance();
 
     this.transactions.push(newTransaction);
 
